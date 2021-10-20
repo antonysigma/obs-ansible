@@ -1,0 +1,60 @@
+---
+nvmpi_files:
+  - nvmpi_h264_handler.cpp
+  - nvmpi_h264_handler.hpp
+  - nvmpi_hevc_handler.cpp
+  - nvmpi_hevc_handler.hpp
+  - nvmpi_shared.cpp
+  - nvmpi_shared.hpp
+
+obs_source_path: '/mnt/usb-drive/obs-studio-26.1.2'
+
+apt_packages:
+  - build-essential
+  - checkinstall
+  - cmake
+  - git
+  - libnss3-dev
+  - libmbedtls-dev
+  - libasound2-dev
+  - libavcodec-dev
+  - libavdevice-dev
+  - libavfilter-dev
+  - libavformat-dev
+  - libavutil-dev
+  - libcurl4-openssl-dev
+  - libfdk-aac-dev
+  - libfontconfig-dev
+  - libfreetype6-dev
+  - libgl1-mesa-dev
+  - libjack-jackd2-dev
+  - libjansson-dev
+  - libluajit-5.1-dev
+  - libpulse-dev
+  - libqt5x11extras5-dev
+  - libspeexdsp-dev
+  - libswresample-dev
+  - libswscale-dev
+  - libudev-dev
+  - libv4l-dev
+  - libvlc-dev
+  - libx11-dev
+  - libx264-dev
+  - libxcb-shm0-dev
+  - libxcb-xinerama0-dev
+  - libxcomposite-dev
+  - libxinerama-dev
+  - pkg-config
+  - python3-dev
+  - qt5-default
+  - qtbase5-dev
+  - qtbase5-private-dev
+  - qttools5-dev-tools
+  - libqt5svg5-dev
+  - swig
+  - libxcb-randr0-dev
+  - libxcb-xfixes0-dev
+  - libx11-xcb-dev
+  - libxcb1-dev
+  - ninja-build
+  - ssl-cert

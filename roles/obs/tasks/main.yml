@@ -1,0 +1,54 @@
+---
+- name: Install software dependencies
+  apt:
+    state: present
+    update_cache: yes
+    name: '{{ apt_packages }}'
+  become: yes
+
+- name: Download OBS-studio source code
+  git:
+    repo: 'https://github.com/obsproject/obs-studio.git'
+    dest: '{{ obs_source_path }}'
+    version: '26.1.2'
+    depth: 1
+  ignore_errors: yes
+
+#-name: Install ffmpeg-vpmpi
+
+- name: Embed StreamFX source code
+  import_tasks: install-streamfx.yml
+
+- name: Create build directory
+  file:
+    path: '{{ obs_source_path }}/build'
+    state: directory
+    mode: 0755
+
+- name: Configure OBS
+  command:
+    cmd: >-
+      cmake
+      -GNinja
+      -DUNIX_STRUCTURE=1
+      -DCMAKE_INSTALL_PREFIX=/usr/local
+      -DCMAKE_C_COMPILER=gcc-10
+      -DCMAKE_CXX_COMPILER=g++-10
+      ..
+    chdir: '{{ obs_source_path }}/build'
+  changed_when: no
+
+- name: Compile OBS
+  command: ninja -C '{{ obs_source_path }}/build'
+  changed_when: no
+
+- name: Install OBS
+  command: ninja -C '{{ obs_source_path }}/build' install
+  become: yes
+
+- name: Add shortcut
+  copy:
+    src: obs-jetson
+    dest: /usr/local/bin/obs-jetson
+    mode: 0755
+  become: yes

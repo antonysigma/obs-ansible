@@ -1,0 +1,34 @@
+---
+- name: Download StreamFX plugin
+  git:
+    repo: 'https://github.com/Xaymar/obs-StreamFX.git'
+    dest: '{{ obs_source_path }}/UI/frontend-plugins/streamfx'
+    version: 0.10.1
+    depth: 1
+    recursive: yes
+    force: yes
+  ignore_errors: yes
+
+- name: Add nvmpi interface files
+  copy:
+    src: '{{ item }}'
+    dest: '{{ obs_source_path }}/UI/frontend-plugins/streamfx/source/encoders/handlers/'
+    mode: 0644
+  loop: '{{ nvmpi_files }}'
+
+- name: Also build streamfx from within OBS
+  lineinfile:
+    path: '{{ obs_source_path }}/UI/frontend-plugins/CMakeLists.txt'
+    line: 'add_subdirectory(streamfx)'
+
+- name: Transfer patch file
+  copy:
+    src: 'streamfx.patch'
+    dest: '/tmp/streamfx.patch'
+    mode: 0644
+
+- name: Patch streamfx CMake config
+  command:
+    cmd: git apply --ignore-space-change --ignore-whitespace /tmp/streamfx.patch
+    chdir: '{{ obs_source_path }}/UI/frontend-plugins/streamfx'
+  changed_when: no

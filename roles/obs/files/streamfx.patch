@@ -1,0 +1,60 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e12666e..49b8158 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -146,8 +146,8 @@ message(STATUS "${LOGPREFIX} Version ${VERSION_STRING}")
+ project(
+ 	StreamFX
+ 	VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}.${VERSION_TWEAK}
++       LANGUAGES CXX
+ 	DESCRIPTION "Additional sources, filters, transitions and encoders for OBS Studio."
+-	HOMEPAGE_URL "https://streamfx.xaymar.com/"
+ )
+ 
+ # Full Project Name
+@@ -1125,6 +1125,11 @@ if(T_CHECK)
+ 			"source/encoders/handlers/nvenc_h264_handler.cpp"
+ 			"source/encoders/handlers/nvenc_hevc_handler.hpp"
+ 			"source/encoders/handlers/nvenc_hevc_handler.cpp"
++                       "source/encoders/handlers/nvmpi_shared.cpp"
++                       "source/encoders/handlers/nvmpi_h264_handler.hpp"
++                       "source/encoders/handlers/nvmpi_h264_handler.cpp"
++                       "source/encoders/handlers/nvmpi_hevc_handler.hpp"
++                       "source/encoders/handlers/nvmpi_hevc_handler.cpp"
+ 		)
+ 		list(APPEND PROJECT_DEFINITIONS
+ 			ENABLE_ENCODER_FFMPEG_NVENC
+diff --git a/source/encoders/encoder-ffmpeg.cpp b/source/encoders/encoder-ffmpeg.cpp
+index 4668c23..d83deaa 100644
+--- a/source/encoders/encoder-ffmpeg.cpp
++++ b/source/encoders/encoder-ffmpeg.cpp
+@@ -36,6 +36,8 @@
+ #ifdef ENABLE_ENCODER_FFMPEG_NVENC
+ #include "handlers/nvenc_h264_handler.hpp"
+ #include "handlers/nvenc_hevc_handler.hpp"
++#include "handlers/nvmpi_h264_handler.hpp"
++#include "handlers/nvmpi_hevc_handler.hpp"
+ #endif
+ 
+ #ifdef ENABLE_ENCODER_FFMPEG_PRORES
+@@ -1138,6 +1140,8 @@ ffmpeg_manager::ffmpeg_manager() : _factories(), _handlers(), _debug_handler()
+ #ifdef ENABLE_ENCODER_FFMPEG_NVENC
+ 	register_handler("h264_nvenc", ::std::make_shared<handler::nvenc_h264_handler>());
+ 	register_handler("hevc_nvenc", ::std::make_shared<handler::nvenc_hevc_handler>());
++        register_handler("h264_nvmpi", ::std::make_shared<handler::nvmpi_h264_handler>());
++        register_handler("hevc_nvmpi", ::std::make_shared<handler::nvmpi_hevc_handler>());
+ #endif
+ #ifdef ENABLE_ENCODER_FFMPEG_PRORES
+ 	register_handler("prores_aw", ::std::make_shared<handler::prores_aw_handler>());
+diff --git a/source/strings.hpp b/source/strings.hpp
+index b4c7219..0eef2de 100644
+--- a/source/strings.hpp
++++ b/source/strings.hpp
+@@ -24,6 +24,7 @@
+ #define PREFIX "streamfx-"
+ 
+ #define D_TRANSLATE(x) obs_module_text(x)
++#define D_DESC(x) (x)
+ 
+ #define S_MANUAL_OPEN "Manual.Open"
+ 
